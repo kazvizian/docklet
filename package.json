@@ -1,6 +1,6 @@
 {
   "name": "docklet",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Cross-runtime Base URL utility: resolve and build base URLs for Browser/Node/Bun/Deno.",
   "license": "MIT",
   "homepage": "https://github.com/kazvizian/docklet",
