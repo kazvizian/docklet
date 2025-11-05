@@ -1,0 +1,52 @@
+name: Release (manual)
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Run semantic-release in dry-run mode"
+        type: boolean
+        default: false
+      dist_tag:
+        description: "NPM dist-tag (e.g. latest, next, beta)"
+        type: string
+        default: "latest"
+
+permissions:
+  contents: write
+  packages: write
+  pull-requests: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Build
+        run: bun run build
+
+      - name: Test
+        run: bun test --passWithNoTests
+
+      - name: Release (manual)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          if test "${{ inputs.dry_run }}" = 'true'
+            bun x semantic-release --dry-run
+          else
+            bun x semantic-release
+          end
