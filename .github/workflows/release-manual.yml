@@ -40,13 +40,14 @@ jobs:
       - name: Test
         run: bun test --passWithNoTests
 
-      - name: Release (manual)
+    - name: Release (manual)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      LEFTHOOK: "0"
         run: |
-          if test "${{ inputs.dry_run }}" = 'true'
+          if [ "${{ inputs.dry_run }}" = "true" ]; then
             bun x semantic-release --dry-run
           else
             bun x semantic-release
-          end
+          fi
